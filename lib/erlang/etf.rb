@@ -19,7 +19,9 @@ require 'erlang/etf/list'
 require 'erlang/etf/map'
 require 'erlang/etf/new_float'
 require 'erlang/etf/new_fun'
+require 'erlang/etf/new_pid'
 require 'erlang/etf/new_reference'
+require 'erlang/etf/newer_reference'
 require 'erlang/etf/nil'
 require 'erlang/etf/pid'
 require 'erlang/etf/port'
@@ -35,38 +37,40 @@ module Erlang
   module ETF
     # @private
     B2T = ::Hash[*[
-      [ Erlang::ETF::Term::SMALL_INTEGER_EXT,   Erlang::ETF::SmallInteger  ],
-      [ Erlang::ETF::Term::INTEGER_EXT,         Erlang::ETF::Integer       ],
-      [ Erlang::ETF::Term::FLOAT_EXT,           Erlang::ETF::Float         ],
-      [ Erlang::ETF::Term::ATOM_EXT,            Erlang::ETF::Atom          ],
-      [ Erlang::ETF::Term::REFERENCE_EXT,       Erlang::ETF::Reference     ],
-      [ Erlang::ETF::Term::PORT_EXT,            Erlang::ETF::Port          ],
-      [ Erlang::ETF::Term::PID_EXT,             Erlang::ETF::Pid           ],
-      [ Erlang::ETF::Term::SMALL_TUPLE_EXT,     Erlang::ETF::SmallTuple    ],
-      [ Erlang::ETF::Term::LARGE_TUPLE_EXT,     Erlang::ETF::LargeTuple    ],
-      [ Erlang::ETF::Term::NIL_EXT,             Erlang::ETF::Nil           ],
-      [ Erlang::ETF::Term::STRING_EXT,          Erlang::ETF::String        ],
-      [ Erlang::ETF::Term::LIST_EXT,            Erlang::ETF::List          ],
-      [ Erlang::ETF::Term::BINARY_EXT,          Erlang::ETF::Binary        ],
-      [ Erlang::ETF::Term::SMALL_BIG_EXT,       Erlang::ETF::SmallBig      ],
-      [ Erlang::ETF::Term::LARGE_BIG_EXT,       Erlang::ETF::LargeBig      ],
-      [ Erlang::ETF::Term::NEW_REFERENCE_EXT,   Erlang::ETF::NewReference  ],
-      [ Erlang::ETF::Term::SMALL_ATOM_EXT,      Erlang::ETF::SmallAtom     ],
-      [ Erlang::ETF::Term::FUN_EXT,             Erlang::ETF::Fun           ],
-      [ Erlang::ETF::Term::NEW_FUN_EXT,         Erlang::ETF::NewFun        ],
-      [ Erlang::ETF::Term::EXPORT_EXT,          Erlang::ETF::Export        ],
-      [ Erlang::ETF::Term::BIT_BINARY_EXT,      Erlang::ETF::BitBinary     ],
-      [ Erlang::ETF::Term::NEW_FLOAT_EXT,       Erlang::ETF::NewFloat      ],
-      [ Erlang::ETF::Term::ATOM_UTF8_EXT,       Erlang::ETF::AtomUTF8      ],
-      [ Erlang::ETF::Term::SMALL_ATOM_UTF8_EXT, Erlang::ETF::SmallAtomUTF8 ],
-      [ Erlang::ETF::Term::MAP_EXT,             Erlang::ETF::Map           ],
-      # [ Erlang::ETF::Term::DIST_HEADER,             NotImplementedError  ],
-      # [ Erlang::ETF::Term::ATOM_CACHE_REF,          NotImplementedError  ],
-      # [ Erlang::ETF::Term::ATOM_INTERNAL_REF2,      NotImplementedError  ],
-      # [ Erlang::ETF::Term::ATOM_INTERNAL_REF3,      NotImplementedError  ],
-      # [ Erlang::ETF::Term::BINARY_INTERNAL_REF,     NotImplementedError  ],
-      # [ Erlang::ETF::Term::BIT_BINARY_INTERNAL_REF, NotImplementedError  ],
-      [ Erlang::ETF::Term::COMPRESSED,          Erlang::ETF::Compressed    ]
+      [ Erlang::ETF::Term::SMALL_INTEGER_EXT,   Erlang::ETF::SmallInteger   ],
+      [ Erlang::ETF::Term::INTEGER_EXT,         Erlang::ETF::Integer        ],
+      [ Erlang::ETF::Term::FLOAT_EXT,           Erlang::ETF::Float          ],
+      [ Erlang::ETF::Term::ATOM_EXT,            Erlang::ETF::Atom           ],
+      [ Erlang::ETF::Term::REFERENCE_EXT,       Erlang::ETF::Reference      ],
+      [ Erlang::ETF::Term::PORT_EXT,            Erlang::ETF::Port           ],
+      [ Erlang::ETF::Term::PID_EXT,             Erlang::ETF::Pid            ],
+      [ Erlang::ETF::Term::NEW_PID_EXT,         Erlang::ETF::NewPid         ],
+      [ Erlang::ETF::Term::SMALL_TUPLE_EXT,     Erlang::ETF::SmallTuple     ],
+      [ Erlang::ETF::Term::LARGE_TUPLE_EXT,     Erlang::ETF::LargeTuple     ],
+      [ Erlang::ETF::Term::NIL_EXT,             Erlang::ETF::Nil            ],
+      [ Erlang::ETF::Term::STRING_EXT,          Erlang::ETF::String         ],
+      [ Erlang::ETF::Term::LIST_EXT,            Erlang::ETF::List           ],
+      [ Erlang::ETF::Term::BINARY_EXT,          Erlang::ETF::Binary         ],
+      [ Erlang::ETF::Term::SMALL_BIG_EXT,       Erlang::ETF::SmallBig       ],
+      [ Erlang::ETF::Term::LARGE_BIG_EXT,       Erlang::ETF::LargeBig       ],
+      [ Erlang::ETF::Term::NEW_REFERENCE_EXT,   Erlang::ETF::NewReference   ],
+      [ Erlang::ETF::Term::NEWER_REFERENCE_EXT, Erlang::ETF::NewerReference ],
+      [ Erlang::ETF::Term::SMALL_ATOM_EXT,      Erlang::ETF::SmallAtom      ],
+      [ Erlang::ETF::Term::FUN_EXT,             Erlang::ETF::Fun            ],
+      [ Erlang::ETF::Term::NEW_FUN_EXT,         Erlang::ETF::NewFun         ],
+      [ Erlang::ETF::Term::EXPORT_EXT,          Erlang::ETF::Export         ],
+      [ Erlang::ETF::Term::BIT_BINARY_EXT,      Erlang::ETF::BitBinary      ],
+      [ Erlang::ETF::Term::NEW_FLOAT_EXT,       Erlang::ETF::NewFloat       ],
+      [ Erlang::ETF::Term::ATOM_UTF8_EXT,       Erlang::ETF::AtomUTF8       ],
+      [ Erlang::ETF::Term::SMALL_ATOM_UTF8_EXT, Erlang::ETF::SmallAtomUTF8  ],
+      [ Erlang::ETF::Term::MAP_EXT,             Erlang::ETF::Map            ],
+      # [ Erlang::ETF::Term::DIST_HEADER,             NotImplementedError   ],
+      # [ Erlang::ETF::Term::ATOM_CACHE_REF,          NotImplementedError   ],
+      # [ Erlang::ETF::Term::ATOM_INTERNAL_REF2,      NotImplementedError   ],
+      # [ Erlang::ETF::Term::ATOM_INTERNAL_REF3,      NotImplementedError   ],
+      # [ Erlang::ETF::Term::BINARY_INTERNAL_REF,     NotImplementedError   ],
+      # [ Erlang::ETF::Term::BIT_BINARY_INTERNAL_REF, NotImplementedError   ],
+      [ Erlang::ETF::Term::COMPRESSED,          Erlang::ETF::Compressed     ],
     ].flatten].freeze
 
     # @private
@@ -74,31 +78,33 @@ module Erlang
 
     # @private
     TYPE = ::Hash[*[
-      [ :atom,            Erlang::ETF::Atom          ],
-      [ :atom_utf8,       Erlang::ETF::AtomUTF8      ],
-      [ :binary,          Erlang::ETF::Binary        ],
-      [ :bit_binary,      Erlang::ETF::BitBinary     ],
-      [ :export,          Erlang::ETF::Export        ],
-      [ :float,           Erlang::ETF::Float         ],
-      [ :fun,             Erlang::ETF::Fun           ],
-      [ :integer,         Erlang::ETF::Integer       ],
-      [ :large_big,       Erlang::ETF::LargeBig      ],
-      [ :large_tuple,     Erlang::ETF::LargeTuple    ],
-      [ :list,            Erlang::ETF::List          ],
-      [ :map,             Erlang::ETF::Map           ],
-      [ :new_float,       Erlang::ETF::NewFloat      ],
-      [ :new_fun,         Erlang::ETF::NewFun        ],
-      [ :new_reference,   Erlang::ETF::NewReference  ],
-      [ :nil,             Erlang::ETF::Nil           ],
-      [ :pid,             Erlang::ETF::Pid           ],
-      [ :port,            Erlang::ETF::Port          ],
-      [ :reference,       Erlang::ETF::Reference     ],
-      [ :small_atom,      Erlang::ETF::SmallAtom     ],
-      [ :small_atom_utf8, Erlang::ETF::SmallAtomUTF8 ],
-      [ :small_big,       Erlang::ETF::SmallBig      ],
-      [ :small_integer,   Erlang::ETF::SmallInteger  ],
-      [ :small_tuple,     Erlang::ETF::SmallTuple    ],
-      [ :string,          Erlang::ETF::String        ]
+      [ :atom,            Erlang::ETF::Atom           ],
+      [ :atom_utf8,       Erlang::ETF::AtomUTF8       ],
+      [ :binary,          Erlang::ETF::Binary         ],
+      [ :bit_binary,      Erlang::ETF::BitBinary      ],
+      [ :export,          Erlang::ETF::Export         ],
+      [ :float,           Erlang::ETF::Float          ],
+      [ :fun,             Erlang::ETF::Fun            ],
+      [ :integer,         Erlang::ETF::Integer        ],
+      [ :large_big,       Erlang::ETF::LargeBig       ],
+      [ :large_tuple,     Erlang::ETF::LargeTuple     ],
+      [ :list,            Erlang::ETF::List           ],
+      [ :map,             Erlang::ETF::Map            ],
+      [ :new_float,       Erlang::ETF::NewFloat       ],
+      [ :new_fun,         Erlang::ETF::NewFun         ],
+      [ :new_reference,   Erlang::ETF::NewReference   ],
+      [ :newer_reference, Erlang::ETF::NewerReference ],
+      [ :nil,             Erlang::ETF::Nil            ],
+      [ :pid,             Erlang::ETF::Pid            ],
+      [ :new_pid,         Erlang::ETF::NewPid         ],
+      [ :port,            Erlang::ETF::Port           ],
+      [ :reference,       Erlang::ETF::Reference      ],
+      [ :small_atom,      Erlang::ETF::SmallAtom      ],
+      [ :small_atom_utf8, Erlang::ETF::SmallAtomUTF8  ],
+      [ :small_big,       Erlang::ETF::SmallBig       ],
+      [ :small_integer,   Erlang::ETF::SmallInteger   ],
+      [ :small_tuple,     Erlang::ETF::SmallTuple     ],
+      [ :string,          Erlang::ETF::String         ],
     ].flatten].freeze
 
     def self.is_atom(term)
@@ -185,9 +191,21 @@ module Erlang
       return false
     end
 
+    def self.is_new_pid(term)
+      return true if term.kind_of?(TYPE[:new_pid])
+      return true if Erlang.is_pid(term) and term.new_pid?
+      return false
+    end
+
     def self.is_new_reference(term)
       return true if term.kind_of?(TYPE[:new_reference])
       return true if Erlang.is_reference(term) and term.new_reference?
+      return false
+    end
+
+    def self.is_newer_reference(term)
+      return true if term.kind_of?(TYPE[:newer_reference])
+      return true if Erlang.is_reference(term) and term.newer_reference?
       return false
     end
 
@@ -355,8 +373,10 @@ module Erlang
     return :list            if Erlang::ETF.is_list(term)
     return :map             if Erlang::ETF.is_map(term)
     return :new_float       if Erlang::ETF.is_new_float(term)
+    return :new_pid         if Erlang::ETF.is_new_pid(term)
     return :new_fun         if Erlang::ETF.is_new_fun(term)
     return :new_reference   if Erlang::ETF.is_new_reference(term)
+    return :newer_reference if Erlang::ETF.is_newer_reference(term)
     return :nil             if Erlang::ETF.is_nil(term)
     return :pid             if Erlang::ETF.is_pid(term)
     return :port            if Erlang::ETF.is_port(term)

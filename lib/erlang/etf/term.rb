@@ -17,6 +17,7 @@ module Erlang
       REFERENCE_EXT           = 101.freeze
       PORT_EXT                = 102.freeze
       PID_EXT                 = 103.freeze
+      NEW_PID_EXT             =  88.freeze
       SMALL_TUPLE_EXT         = 104.freeze
       LARGE_TUPLE_EXT         = 105.freeze
       NIL_EXT                 = 106.freeze
@@ -26,6 +27,7 @@ module Erlang
       SMALL_BIG_EXT           = 110.freeze
       LARGE_BIG_EXT           = 111.freeze
       NEW_REFERENCE_EXT       = 114.freeze
+      NEWER_REFERENCE_EXT     =  90.freeze
       SMALL_ATOM_EXT          = 115.freeze
       FUN_EXT                 = 117.freeze
       NEW_FUN_EXT             = 112.freeze
